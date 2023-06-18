@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { AppLayout } from '@/components';
 import {
+  AppLayout,
   AnalyticsView,
   HomeView,
   ProfileView,
