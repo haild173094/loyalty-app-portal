@@ -1,5 +1,5 @@
 <template lang="pug">
-h1 Profile view
+h1 Customer page
 </template>
 
 <script setup lang="ts">

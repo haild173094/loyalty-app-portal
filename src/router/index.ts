@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import {
   AppLayout,
-  AnalyticsView,
   HomeView,
-  ProfileView,
-  SettingView,
+  Customers,
+  Discounts,
+  Rules
 } from '@/views';
 
 const routes = [
@@ -18,19 +18,19 @@ const routes = [
         component: HomeView,
       },
       {
-        path: '/analytics',
-        name: 'analytics',
-        component: AnalyticsView,
+        path: '/customers',
+        name: 'customers',
+        component: Customers,
       },
       {
-        path: '/setting',
-        name: 'setting',
-        component: SettingView,
+        path: '/discounts',
+        name: 'discounts',
+        component: Discounts,
       },
       {
-        path: '/profile',
-        name: 'profile',
-        component: ProfileView,
+        path: '/rules',
+        name: 'rules',
+        component: Rules,
       },
     ],
   },

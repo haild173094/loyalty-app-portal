@@ -1,5 +1,5 @@
 <template lang="pug">
-h1 Analytics view
+h1 Discounts page
 </template>
 
 <script setup lang="ts">

@@ -1,26 +1,14 @@
 export const NAVIGATION_ITEMS = [
   {
-    label: 'Sticky button',
-    destination: '/stickycart/settings/sticky-button',
+    label: 'Rules',
+    destination: '/rules',
   },
   {
-    label: 'Sticky bar',
-    destination: '/stickycart/settings/sticky-bar',
+    label: 'Discounts',
+    destination: '/discounts',
   },
   {
-    label: 'Analytics',
-    destination: '/stickycart/analytics',
-  },
-  {
-    label: 'Pricing',
-    destination: '/stickycart/pricing',
-  },
-  {
-    label: 'Explore',
-    destination: '/stickycart/explore',
-  },
-  {
-    label: 'Profile',
-    destination: '/stickycart/profile',
+    label: 'Customers',
+    destination: '/customers',
   },
 ];

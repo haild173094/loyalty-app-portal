@@ -1,5 +1,5 @@
 <template lang="pug">
-h1 Setting view
+p This is the Rules page
 </template>
 
 <script setup lang="ts">
