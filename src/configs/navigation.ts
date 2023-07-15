@@ -1,5 +1,9 @@
 export const NAVIGATION_ITEMS = [
   {
+    label: 'Products',
+    destination: '/products',
+  },
+  {
     label: 'Rules',
     destination: '/rules',
   },

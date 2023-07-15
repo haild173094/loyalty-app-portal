@@ -4,7 +4,10 @@ import {
   HomeView,
   Customers,
   Discounts,
-  Rules
+  Rules,
+  ProductIndex,
+  Products,
+  ProductRule,
 } from '@/views';
 
 const routes = [
@@ -31,6 +34,22 @@ const routes = [
         path: '/rules',
         name: 'rules',
         component: Rules,
+      },
+      {
+        path: '/products',
+        component: ProductIndex,
+        children: [
+          {
+            path: '',
+            name: 'products',
+            component: Products,
+          },
+          {
+            path: 'settings/:id?',
+            name: 'product-rule',
+            component: ProductRule,
+          },
+        ],
       },
     ],
   },

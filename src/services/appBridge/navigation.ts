@@ -26,7 +26,6 @@ export function useNavigation() {
 
   // Install navigation side bar
   const setNavigation = (navigationItems: Record<string, string>[]) => {
-    console.log(1, navigationItems);
     if (navigationItems && navigationItems.length > 0) {
       NavigationMenu.create(appBridge, {
         items: navigationItems.map(item =>

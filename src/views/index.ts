@@ -1,3 +1,5 @@
+export * from './products';
+
 export { default as HomeView } from './HomeView.vue';
 export { default as Customers } from './Customers.vue';
 export { default as Discounts } from './Discounts.vue';

@@ -39,6 +39,7 @@ export const useAuthStore = defineStore({
     },
 
     shopDomain: (state: IAuthState): string => state.shop?.myshopify_domain || '',
+    tokenData: (state: IAuthState): IToken | null => state.token,
   },
 
   actions: {
