@@ -1,7 +1,7 @@
 <template lang="pug">
 Page(
   title="Rule",
-  :breadcrumbs="[{ content: 'Product Rules', onAction: () => navigate(getRoutePathByName('products')) }]",
+  :breadcrumbs="[{ content: 'Product Rules', onAction: () => navigate(getRoutePathByName('rules')) }]",
 )
   Layout
     LayoutSection

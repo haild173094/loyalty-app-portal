@@ -10,31 +10,34 @@ Page
         ) Generate New Rule
     LayoutSection
       Card(sectioned)
+        Spinner(v-if="isLoadingRules")
         IndexTable(
+          v-else,
           :resource-name="resourceName",
-          :heading="headings",
+          :headings="headings",
+          :loading="isLoadingRules",
+          :item-count="entryList.length",
         )
           IndexTableRow(
             v-for="(item, index) in entryList",
             :id="item.id",
             :key="item.id",
             :position="index",
-            :status="!item.status ? 'subdued' : ''",
           )
             IndexTableCell
               Stack(alignment="center")
                 div
                   TextStyle.co-entry-list__item__name.truncate(variation="strong") {{ item.name }}
-                Badge(v-if="item.data.enable_ab_testing") active
             IndexTableCell
               Badge(
-                v-if="item.status === 1",
                 status="success",
-              ) active
+              ) {{ item.shopify_id }}
+            IndexTableCell
+              Text(as="p", variant="bodyMd") {{ item.type === 'product' ? 'Product' : 'Collection' }}
+            IndexTableCell
               Badge(
-                v-else,
-                status="warning",
-              ) inactive
+                status="success",
+              ) {{ item.loyalty_point || 0 }}
             IndexTableCell
               .co-entry-list__item__actions
                 Stack(distribution="trailing")
@@ -62,28 +65,32 @@ Page
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useNavigation, useRoutingService } from '@/services';
 import { useProducts } from '@/services/http/product';
 import { Card, Layout } from '@ownego/polaris-vue';
 import EditMinor from '@icons/EditMinor.svg';
 import DeleteMinor from '@icons/DeleteMinor.svg';
 
+const headings = [
+  { title: 'Rule name' },
+  { title: 'Product/Collection Id' },
+  { title: 'Rule type' },
+  { title: 'Loyalty point' },
+  { title: 'Action' },
+];
+
+const resourceName = {
+  singular: 'rule-list',
+  plural: 'rule-lists',
+};
+
 const { getLoyaltyRules } = useProducts();
 const { navigate } = useNavigation();
 const { getRoutePathByRouteObject } = useRoutingService();
 
-const headings = [
-  { title: 'Name' },
-  { title: 'Location' },
-  { title: 'Order count' },
-  { title: 'Amount spent' },
-];
-
-const resourceName = {
-  singular: 'product-list',
-  plural: 'product-lists',
-};
+const entryList = ref<Record<string, any>[]>([]);
+const isLoadingRules = ref<boolean>(false);
 
 const handleEditOffer = (id: any) => {
   navigate(getRoutePathByRouteObject({
@@ -104,5 +111,21 @@ const handleCreateRule = (id?: any) => {
   }));
 };
 
-getLoyaltyRules();
+onMounted(
+  async () => {
+    isLoadingRules.value = true;
+
+    await getLoyaltyRules()
+      .then((res: any) => {
+        console.log('loyalty rules: ', res);
+        entryList.value = res?.data || [];
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .finally(() => {
+        isLoadingRules.value = false;
+      });
+  },
+);
 </script>

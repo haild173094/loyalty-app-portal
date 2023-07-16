@@ -4,10 +4,9 @@ import {
   HomeView,
   Customers,
   Discounts,
-  Rules,
-  ProductIndex,
-  Products,
-  ProductRule,
+  RuleIndex,
+  RuleList,
+  RuleSettings,
 } from '@/views';
 
 const routes = [
@@ -30,24 +29,20 @@ const routes = [
         name: 'discounts',
         component: Discounts,
       },
+
       {
         path: '/rules',
-        name: 'rules',
-        component: Rules,
-      },
-      {
-        path: '/products',
-        component: ProductIndex,
+        component: RuleIndex,
         children: [
           {
             path: '',
-            name: 'products',
-            component: Products,
+            name: 'rules',
+            component: RuleList,
           },
           {
             path: 'settings/:id?',
             name: 'product-rule',
-            component: ProductRule,
+            component: RuleSettings,
           },
         ],
       },

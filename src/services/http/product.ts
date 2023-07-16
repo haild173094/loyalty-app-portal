@@ -18,15 +18,15 @@ export function useProducts() {
       });
   };
 
-  const getLoyaltyRules = () => {
+  const getLoyaltyRules = (): Promise<void> => new Promise((resolve, reject) => {
     fetchFunction.get('/loyalty-rules')
       .then((res: any) => {
-        console.log('loyalty: ', res);
+        resolve(res);
       })
       .catch((err: any) => {
-        console.log('loyalty: ', err);
+        reject(err);
       });
-  };
+  });
 
   return {
     getProducts,
