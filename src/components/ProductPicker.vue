@@ -39,6 +39,7 @@
                 Thumbnail(
                   :alt="item.title",
                   size="small",
+                  :source="item?.image?.url ? item.image.url : ''",
                 )
                 .truncate
                   TextStyle {{ item.title }}
@@ -154,7 +155,7 @@ const collectProducts = (keyword?: string, nextCursor?: string) => {
 
   fetchFunction.get('/shopify/products')
     .then((res: any) => {
-      console.log(res);
+      console.log('products', res);
 
       if (nextCursor) {
         productData.value = [...(productData.value || []), ...res.data];
@@ -223,6 +224,8 @@ function removeItem(id: string) {
 function addItem(id: string) {
   const productInfo = productData.value.find(item => item.id === id);
 
+  console.log('productInfo', productInfo);
+
   const restOutput = props.extraOutputFields?.reduce((acc: Record<string, any>, field) => {
     acc[field] = productInfo?.[field];
 
@@ -232,7 +235,7 @@ function addItem(id: string) {
   const modelData = {
     id: id,
     title: productInfo?.title,
-    image: { url: productInfo?.image.url },
+    image: { url: productInfo?.image?.url },
     ...restOutput,
   };
 

@@ -69,12 +69,9 @@ import { Card, Layout } from '@ownego/polaris-vue';
 import EditMinor from '@icons/EditMinor.svg';
 import DeleteMinor from '@icons/DeleteMinor.svg';
 
-const { getProducts, getShopifyProducts } = useProducts();
+const { getLoyaltyRules } = useProducts();
 const { navigate } = useNavigation();
 const { getRoutePathByRouteObject } = useRoutingService();
-
-getProducts();
-getShopifyProducts();
 
 const headings = [
   { title: 'Name' },
@@ -106,4 +103,6 @@ const handleCreateRule = (id?: any) => {
     params: { id },
   }));
 };
+
+getLoyaltyRules();
 </script>

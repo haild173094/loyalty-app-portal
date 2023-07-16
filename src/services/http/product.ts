@@ -18,8 +18,19 @@ export function useProducts() {
       });
   };
 
+  const getLoyaltyRules = () => {
+    fetchFunction.get('/loyalty-rules')
+      .then((res: any) => {
+        console.log('loyalty: ', res);
+      })
+      .catch((err: any) => {
+        console.log('loyalty: ', err);
+      });
+  };
+
   return {
     getProducts,
     getShopifyProducts,
+    getLoyaltyRules,
   };
 }
