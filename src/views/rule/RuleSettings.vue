@@ -11,7 +11,6 @@ Page(
           v-model="entryData.name",
           disabled,
         )
-        p {{ entryData }}
     LayoutSection
       Card(sectioned)
         ChoiceList(
@@ -33,7 +32,18 @@ Page(
             :allow-multiple="false",
             :extra-output-fields="['id', 'handle', 'image', 'title']",
           )
-          p {{ entryData.data.products }}
+      Card(v-else, sectioned)
+        .mb-3
+          Text(
+            as="h5",
+            variant="bodyLg",
+          ) Select the collection to apply the rule to:
+        .mt-3
+          CollectionsPicker(
+            v-model="entryData.data.products",
+            :allow-multiple="false",
+            :extra-output-fields="['id', 'handle', 'image', 'title']",
+          )
     LayoutSection
       Card(sectioned)
         .mb-3
@@ -59,15 +69,16 @@ Page(
 
 <script setup lang="ts">
 import {
-  onMounted, reactive, ref, toRaw, watch,
+  onMounted, reactive, ref, toRaw, watch, computed,
 } from 'vue';
+import { useRoute } from 'vue-router';
 import isEqual from 'lodash/isEqual';
 import cloneDeep from 'lodash/cloneDeep';
 import {
   useContextualSaveBar, useNavigation, useRoutingService,
 } from '@/services';
 import { useAuthenticatedFetch } from '@/services/appBridge';
-import { ProductPicker } from '@/components';
+import { ProductPicker, CollectionsPicker } from '@/components';
 import { LayoutSection } from '@ownego/polaris-vue';
 
 const { navigate } = useNavigation();
@@ -81,6 +92,7 @@ const {
   onDiscard: onDiscardContextualSaveBar,
 } = useContextualSaveBar();
 const fetchFunction = useAuthenticatedFetch();
+const route = useRoute();
 
 const choices = [
   {
@@ -103,6 +115,8 @@ const entryData = ref<any>({
 
 const typeRule = ref('product');
 
+const isEdit = computed(() => entryData.value.id !== '');
+
 const handleChangeTypeRule = () => {
   entryData.value.type = typeRule.value;
 };
@@ -113,6 +127,71 @@ let originalEntryData: typeof entryData.value = {
   type: '',
   data: { products: [] },
   point: 0,
+};
+
+const populateEntryData = async (populateData: typeof entryData.data) => {
+  originalEntryData.id = populateData.id;
+  originalEntryData.name = populateData.name;
+  originalEntryData.type = populateData.type;
+  originalEntryData.point = populateData.loyalty_point;
+
+  if (populateData.type === 'collection') {
+    originalEntryData.data.products = await collectCollections(populateData.shopify_id);
+  } else {
+    originalEntryData.data.products = await collectProducts(populateData.shopify_id);
+  }
+
+  entryData.value = cloneDeep(originalEntryData);
+};
+
+const collectRuleData = () => {
+  fetchFunction.get('loyalty-rules')
+    .then((res: any) => {
+      const dataResponse = res.data.find((item: any) => item.id === +entryData.value.id);
+
+      typeRule.value = dataResponse.type;
+
+      populateEntryData(dataResponse);
+    })
+    .catch((err: any) => {
+      console.log('err', err);
+    });
+};
+
+const collectProducts = async (id: any) => {
+  const test: any = [];
+
+  await fetchFunction.get('/shopify/products')
+    .then((res: any) => {
+      res.data.forEach((item: any) => {
+        if (item.shopify_id === id) {
+          test.push(item);
+        }
+      });
+    })
+    .catch((err: any) => {
+      console.log(err);
+    });
+
+  return test;
+};
+
+const collectCollections = async (id: any) => {
+  const test: any = [];
+
+  await fetchFunction.get('/shopify/collections')
+    .then((res: any) => {
+      res.data.forEach((item: any) => {
+        if (item.shopify_id === id) {
+          test.push(item);
+        }
+      });
+    })
+    .catch((err: any) => {
+      console.log(err);
+    });
+
+  return test;
 };
 
 watch(
@@ -132,9 +211,14 @@ watch(
 );
 
 onMounted(() => {
-  entryData.value.name = `${typeRule.value} Rule`;
+  entryData.value.name = `${typeRule.value} Rule #${entryData.value.id || 0}}`;
   entryData.value.type = typeRule.value;
   originalEntryData = cloneDeep(entryData.value);
+
+  if (route.params.id) {
+    entryData.value.id = route.params?.id;
+    collectRuleData();
+  }
 });
 
 // Save entry data
@@ -148,7 +232,8 @@ function removeShopifyGidPrefix (originString: string, type: string): string {
 function triggerSaveAction(): void {
   configContextualSaveBar({ saveAction: { loading: true } });
 
-  const removePrefixId: string = removeShopifyGidPrefix(entryData.value.data.products[0].id, 'Product');
+  // eslint-disable-next-line max-len
+  const removePrefixId: string = removeShopifyGidPrefix(entryData.value.data.products[0].id, entryData.value.type === 'product' ? 'Product': 'Collection');
 
   const requestParams = {
     name: entryData.value.name,
@@ -157,9 +242,18 @@ function triggerSaveAction(): void {
     loyalty_point: +entryData.value.point,
   };
 
-  fetchFunction.post('loyalty-rules', requestParams)
+  // fetchFunction.post('loyalty-rules', requestParams)
+
+  const requestCaller = isEdit.value
+    ? fetchFunction.put(`/loyalty-rules/${entryData.value.id}`, requestParams)
+    : fetchFunction.post('loyalty-rules', requestParams);
+
+  requestCaller
     .then((res: any) => {
       console.log('res', res);
+      console.log('originalEntryData', originalEntryData);
+      entryData.value = cloneDeep(originalEntryData);
+      navigate(getRoutePathByName('rules'));
     })
     .catch((err: any) => {
       console.log('err', err);

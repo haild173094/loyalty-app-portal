@@ -7,8 +7,10 @@ export function useProducts() {
   const getProducts = () => {
     fetchFunction.get('/products')
       .then((res: any) => {
-        console.log(res);
-      });
+      })
+      .catch((err: any) => {
+        console.log(err);
+    });
   };
 
   const getShopifyProducts = () => {
@@ -28,9 +30,20 @@ export function useProducts() {
       });
   });
 
+  const getDiscountBlueprints = (): Promise<void> => new Promise((resolve, reject) => {
+    fetchFunction.get('/discount-blueprints')
+      .then((res: any) => {
+        resolve(res);
+      })
+      .catch((err: any) => {
+        reject(err);
+      });
+  });
+
   return {
     getProducts,
     getShopifyProducts,
     getLoyaltyRules,
+    getDiscountBlueprints,
   };
 }

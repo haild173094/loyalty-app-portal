@@ -16,6 +16,5 @@ app.use(PolarisVue);
 // app.provide('axios', axios);
 
 router.isReady().then(() => {
-  console.log(1);
   app.mount('#app');
 });

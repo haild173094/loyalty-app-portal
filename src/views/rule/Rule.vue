@@ -61,14 +61,32 @@ Page
                           :icon="DeleteMinor",
                           @click="triggerModalDelete(item)",
                         )
-
+Modal(
+  :open="showDeleteModal",
+  @close="showDeleteModal = false",
+)
+  template(#title) Are you sure?
+  template(#content)
+    ModalSection
+      Text(
+        as="p",
+        variant="bodyMd",
+      ) Are you sure you want to delete this rule?
+      .my-4
+        ButtonGroup
+          Button Cancel
+          Button(
+            primary,
+            @click="handleDeleteRule()",
+          ) Delete
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { useNavigation, useRoutingService } from '@/services';
+import {
+  useNavigation, useRoutingService, useAuthenticatedFetch, useToast,
+} from '@/services';
 import { useProducts } from '@/services/http/product';
-import { Card, Layout } from '@ownego/polaris-vue';
 import EditMinor from '@icons/EditMinor.svg';
 import DeleteMinor from '@icons/DeleteMinor.svg';
 
@@ -88,9 +106,13 @@ const resourceName = {
 const { getLoyaltyRules } = useProducts();
 const { navigate } = useNavigation();
 const { getRoutePathByRouteObject } = useRoutingService();
+const fetchFunction = useAuthenticatedFetch();
+const toast = useToast();
 
 const entryList = ref<Record<string, any>[]>([]);
 const isLoadingRules = ref<boolean>(false);
+const showDeleteModal = ref<boolean>(false);
+const selectedDeleteItem = ref<Record<string, any>>({});
 
 const handleEditOffer = (id: any) => {
   navigate(getRoutePathByRouteObject({
@@ -100,15 +122,38 @@ const handleEditOffer = (id: any) => {
 };
 
 const triggerModalDelete = (item: any) => {
-  console.log('triggerModalDelete');
+  selectedDeleteItem.value = item;
+  showDeleteModal.value = true;
 };
 
 const handleCreateRule = (id?: any) => {
-  console.log('handleCreateRule');
   navigate(getRoutePathByRouteObject({
     name: 'product-rule',
     params: { id },
   }));
+};
+
+const handleDeleteRule = () => {
+  fetchFunction.delete(`/loyalty-rules/${selectedDeleteItem.value.id}`)
+    .then((res: any) => {
+      showDeleteModal.value = false;
+      toast.show({ message: 'Delete rule successfully' });
+      isLoadingRules.value = true;
+
+      getLoyaltyRules()
+        .then((res: any) => {
+          entryList.value = res?.data || [];
+        })
+        .catch(err => {
+          console.log(err);
+        })
+        .finally(() => {
+          isLoadingRules.value = false;
+        });
+    })
+    .catch(err => {
+      console.log(err);
+    });
 };
 
 onMounted(
@@ -117,7 +162,6 @@ onMounted(
 
     await getLoyaltyRules()
       .then((res: any) => {
-        console.log('loyalty rules: ', res);
         entryList.value = res?.data || [];
       })
       .catch(err => {

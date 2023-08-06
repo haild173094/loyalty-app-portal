@@ -155,8 +155,6 @@ const collectProducts = (keyword?: string, nextCursor?: string) => {
 
   fetchFunction.get('/shopify/products')
     .then((res: any) => {
-      console.log('products', res);
-
       if (nextCursor) {
         productData.value = [...(productData.value || []), ...res.data];
       } else {
@@ -223,8 +221,6 @@ function removeItem(id: string) {
 
 function addItem(id: string) {
   const productInfo = productData.value.find(item => item.id === id);
-
-  console.log('productInfo', productInfo);
 
   const restOutput = props.extraOutputFields?.reduce((acc: Record<string, any>, field) => {
     acc[field] = productInfo?.[field];
