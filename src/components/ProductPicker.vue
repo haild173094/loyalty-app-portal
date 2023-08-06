@@ -45,16 +45,22 @@
                   TextStyle {{ item.title }}
           ListboxLoading(v-if="pageInfo.hasNextPage")
     TextContainer.mt-2(v-if="modelValue?.length")
-      TextStyle(
-        v-if="!collapsible",
-        :variation="$slots.label ? undefined : 'strong'",
-      ) {{ modelValue?.length || 0 }} product selected
+      .model-out(v-if="!collapsible")
+        Stack.mt-2
+          TextStyle(
+            :variation="$slots.label ? undefined : 'strong'",
+          ) {{ modelValue?.length || 0 }} product selected
+          Text(
+            as="p",
+            variant="bodyMd",
+          ) ({{ modelValue[0].title }})
+
       template(v-else)
         Button(
           plain,
           :disclosure="isCollapseSelected ? 'down' : 'up'",
           @click="isCollapseSelected = !isCollapseSelected",
-        ) {{ modelValue?.length || 0 }} product selected
+        ) {{ modelValue?.length || 0 }} product selected 222
         Collapsible(
           :id="`product-picker-collapsible-${generateId()}`",
           :key="modelValue?.length",

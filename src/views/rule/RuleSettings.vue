@@ -210,8 +210,15 @@ watch(
   { deep: true },
 );
 
+watch(
+  () => typeRule.value,
+  newVal => {
+    entryData.value.name = `${newVal} Rule #${entryData.value.id || 0}`;
+  },
+);
+
 onMounted(() => {
-  entryData.value.name = `${typeRule.value} Rule #${entryData.value.id || 0}}`;
+  entryData.value.name = `${typeRule.value} Rule #${entryData.value.id || 0}`;
   entryData.value.type = typeRule.value;
   originalEntryData = cloneDeep(entryData.value);
 
