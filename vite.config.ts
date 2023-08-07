@@ -17,4 +17,17 @@ export default defineConfig({
     },
     dedupe: ['vue'],
   },
+  build: {
+    emptyOutDir: false,
+    rollupOptions:{
+      input:{
+        loyalty: fileURLToPath(new URL('./index.html', import.meta.url)),
+      },
+      output: {
+        dir: 'dist/loyalty',
+        assetFileNames: 'assets/loyalty[extname]',
+        entryFileNames: 'assets/loyalty.js',
+      },
+    },
+  },
 });

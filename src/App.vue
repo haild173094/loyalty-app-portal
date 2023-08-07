@@ -49,7 +49,7 @@ async function handleLogin() {
   try {
     const token = await getToken(appBridge);
 
-    const tokenData = {
+    const tokenData: any = {
       shop: shop.myshopify_domain,
       token,
     };

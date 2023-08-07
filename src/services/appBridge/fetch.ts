@@ -1,5 +1,5 @@
 import { authenticatedFetch } from '@shopify/app-bridge-utils';
-import { APP_CONFIG, APP_LIST } from '@/configs/common';
+import { APP_CONFIG_COMMON, APP_LIST } from '@/configs/common';
 import { useAppBridge } from './main';
 import { APP_BRIDGE_FETCH_CONFIG } from '@/configs/appBridge';
 import { useNavigation } from './navigation';
@@ -118,12 +118,12 @@ export function useAuthenticatedFetch() {
       const { status } = response;
 
       // Redirecting to authorization flow to update app
-      if (status === 403 && json.code === 'UPDATE_REQUIRED') {
+      if (status === 403) {
         const {
           embeddedUrl,
           appSlug,
           shopDomainName,
-        } = APP_CONFIG;
+        } = APP_CONFIG_COMMON;
 
         return redirectExternal(`${embeddedUrl}/${appSlug}?shop=${shopDomainName}`);
       }

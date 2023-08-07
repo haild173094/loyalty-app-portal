@@ -111,7 +111,7 @@ const searchKeyword = ref('');
 const isCollectingData = ref<boolean>(false);
 const collectionData = ref<Record<string, any>[]>([]);
 const isCollapseSelected = ref<boolean>(false);
-const floodFilter = ref<null | number>(null);
+const floodFilter = ref<any>(null);
 
 const isOptionSelected = (id: string) => props.modelValue?.some(item => item.id === id);
 

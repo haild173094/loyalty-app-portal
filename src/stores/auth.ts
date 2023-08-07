@@ -11,6 +11,7 @@ interface IToken {
 interface IAuthState {
   status: string | null,
   shop: Record<string, any> | null,
+  instance: Record<string, any> | null,
   user: Record<string, any> | null,
   token: IToken | null,
 }
@@ -21,6 +22,7 @@ interface IAuthState {
  */
 const defaultState: IAuthState = {
   status: AUTH_CONFIG.loading,
+  instance: null,
   shop: null,
   user: null,
   token: null,

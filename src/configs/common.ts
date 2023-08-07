@@ -13,7 +13,7 @@ const {
   shop,
 } = (window as any).qikifyEmbeddedData;
 
-export const APP_CONFIG = {
+export const APP_CONFIG_COMMON = {
   env: import.meta.env.VITE_NODE_ENV,
   chatKey: 'dbc2a5ba-52c5-4692-ae5a-f72fb8286b14',
   affiliateScript: import.meta.env.VITE_APP_AFFILIATE_SCRIPT,
